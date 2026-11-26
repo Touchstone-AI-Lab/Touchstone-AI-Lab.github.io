@@ -70,7 +70,7 @@ img { display: block; max-width: 100%; }
 .hl { color: #93bfff; }
 .card { background: var(--card); border: 1px solid rgba(162, 189, 229, 0.137); border-radius: 14px; }
 
-.projects { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.projects { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
 .project { display: flex; flex-direction: column; overflow: hidden; }
 .shot { display: block; margin: 14px 14px 0; border-radius: 10px; overflow: hidden; border: 1px solid rgba(190, 210, 240, 0.12); background: #05080e; }
 .shot img { transition: transform .4s ease; }
@@ -95,6 +95,9 @@ footer.site { margin-top: 80px; padding: 54px 0 38px; background: rgba(8, 15, 27
 .foot-grid a:not(.brand) { display: block; text-decoration: none; color: #c5d5ec; line-height: 1.8; }
 .foot-grid a:not(.brand):hover { color: var(--hi); }
 
+@media (max-width: 1180px) { .projects { grid-template-columns: 1fr 1fr; } }
+/* Three cards per row: stack each mini stat so its label stays on one line. */
+@media (min-width: 1181px) { .mini div { flex-direction: column; gap: 2px; padding: 0 18px; } .mini dd { line-height: 1.35; } }
 @media (max-width: 960px) {
   .hero-grid { grid-template-columns: 1fr; min-height: 0; gap: 48px; }
   .stack { height: 62vw; max-height: 440px; }
