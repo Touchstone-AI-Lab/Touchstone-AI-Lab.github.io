@@ -1,0 +1,70 @@
+# Publish the org Pages site: this repo's root files plus project sites built from their own repos.
+# bench-gamecua/ is built from the website branch of Touchstone-AI-Lab/GameCUA. Runs on push, by hand,
+# and every 15 minutes; a scheduled run that finds no new GameCUA commit stops early.
+name: pages
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    - cron: '7,22,37,52 * * * *'
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+  actions: write
+concurrency:
+  group: pages
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      skip: ${{ steps.check.outputs.skip }}
+    steps:
+      - id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          sha=$(git ls-remote https://github.com/Touchstone-AI-Lab/GameCUA.git refs/heads/website | cut -f1)
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          n=$(gh api "repos/$GITHUB_REPOSITORY/actions/caches?key=gamecua-$sha" --jq .total_count)
+          if [ "$GITHUB_EVENT_NAME" = schedule ] && [ "$n" != 0 ]; then echo "skip=true" >> "$GITHUB_OUTPUT"; fi
+      - if: steps.check.outputs.skip != 'true'
+        uses: actions/checkout@v7
+        with:
+          path: root
+      - if: steps.check.outputs.skip != 'true'
+        uses: actions/checkout@v7
+        with:
+          repository: Touchstone-AI-Lab/GameCUA
+          ref: ${{ steps.check.outputs.sha }}
+          path: gamecua
+      - if: steps.check.outputs.skip != 'true'
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - if: steps.check.outputs.skip != 'true'
+        run: |
+          cd gamecua && npm ci && npm run build && cd ..
+          mkdir site && cp root/index.html root/.nojekyll site/ && cp -r gamecua/dist site/bench-gamecua
+      - if: steps.check.outputs.skip != 'true'
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: site
+      # Marks this GameCUA commit as published, so scheduled runs can skip it.
+      - if: steps.check.outputs.skip != 'true'
+        uses: actions/cache/save@v5
+        with:
+          path: site/index.html
+          key: gamecua-${{ steps.check.outputs.sha }}
+  deploy:
+    needs: build
+    if: needs.build.outputs.skip != 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v5
