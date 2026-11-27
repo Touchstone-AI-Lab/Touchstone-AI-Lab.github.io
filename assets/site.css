@@ -31,6 +31,7 @@ img { display: block; max-width: 100%; }
 .nav nav a { font-size: 14px; font-weight: 500; text-decoration: none; color: #dce6f5; padding: 7px 12px; border-radius: 9px; }
 .nav nav a:hover { background: rgba(162, 189, 229, 0.09); color: var(--hi); }
 .icon-btn { display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid var(--line-2); border-radius: 9px; color: var(--hi); }
+.icon-btn + .icon-btn { margin-left: -14px; } /* header gap is 22px; keep icon buttons 8px apart */
 .icon-btn:hover { background: rgba(162, 189, 229, 0.09); }
 
 .btn { display: inline-flex; align-items: center; height: 42px; padding: 0 20px; border-radius: 8px; font-size: 14px; font-weight: 500; text-decoration: none; color: #d1e2ff; background: rgba(137, 181, 255, 0.024); border: 1px solid var(--line-2); transition: background .15s; }
