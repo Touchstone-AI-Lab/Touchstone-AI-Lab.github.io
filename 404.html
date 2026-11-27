@@ -1,0 +1,9 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Touchstone AI</title>
+<script>
+  // Old project paths moved under /bench/; anything else unknown goes to the project index.
+  var p = location.pathname, m = p.match(/^\/bench-gamecua(\/.*)?$/);
+  location.replace(m ? '/bench/gamecua' + (m[1] || '/') + location.search + location.hash : '/');
+</script>
+<p><a href="/">Touchstone AI projects</a></p>
