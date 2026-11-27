@@ -1,5 +1,5 @@
 # Publish the org Pages site: this repo's root files plus project sites built from their own repos.
-# bench/gamecua/ is built from the website branch of Touchstone-AI-Lab/GameCUA, and bench/game-swe/ from the
+# bench/game-cua/ is built from the website branch of Touchstone-AI-Lab/GameCUA, and bench/game-swe/ from the
 # website branch of Touchstone-AI-Lab/game-swe. Runs on push, by hand, and every 15 minutes; a scheduled run
 # that finds no new commit on either website branch stops early.
 name: pages
@@ -57,7 +57,7 @@ jobs:
         run: |
           cd gamecua && npm ci && npm run build && cd ..
           cd gameswe && npm ci && npm run build && cd ..
-          mkdir site && cp -r root/index.html root/404.html root/.nojekyll root/assets site/ && mkdir site/bench && cp -r gamecua/dist site/bench/gamecua
+          mkdir site && cp -r root/index.html root/404.html root/.nojekyll root/assets site/ && mkdir site/bench && cp -r gamecua/dist site/bench/game-cua
           cp -r gameswe/dist site/bench/game-swe
       - if: steps.check.outputs.skip != 'true'
         uses: actions/upload-pages-artifact@v5
